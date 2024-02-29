@@ -187,6 +187,9 @@
             <hr>
             <h5>Upload Survey CSVs <span class="optional">(optional)</span></h5>
             <div class="form-outline mb-4">
+              <%= f.file_field :git_info_csv, :accept => 'text/csv', class: 'form-control form-control', id: 'git_csv' %>
+            </div>
+            <div class="form-outline mb-4">
               <%= f.file_field :client_csv, :accept => 'text/csv', class: 'form-control form-control', id: 'client_csv' %>
             </div>
             <div class="form-outline mb-4">
