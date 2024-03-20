@@ -322,8 +322,11 @@
               }
             </style>
 
-            <form id="github-form">
+            <div class="form-outline mb-4">
+              <input type="file" name="git_info_csv" accept="text/csv" class="form-control form-control" id="git_csv">
+            </div>
 
+            <form id="github-form">
               <!-- Name of Repo Owner -->
               <label for="repo-owner">Repository Owner: </label>
               <input type="text" placeholder="Repo Owner" id="repo-owner" required>
@@ -345,6 +348,41 @@
               <input type="text" placeholder="YYYY-MM-DD" id="end-date" required>
               
               <button type="submit">Get Commit Info</button>
+            </form>
+
+            <script>
+              document.getElementById('git_csv').addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+
+                reader.onload = function(event) {
+                  const csv = event.target.result;
+                  const lines = csv.split(/\r?\n/);
+                  if (lines.length < 2) {
+                    console.error('Invalid CSV format');
+                    return;
+                  }
+
+                  const headers = lines[0].split(',');
+                  const data = lines.slice(1).map(line => line.split(','));
+
+                  const sprintIndex = headers.indexOf('Sprint Number');
+                  const startDateIndex = headers.indexOf('Sprint Start Date');
+                  const endDateIndex = headers.indexOf('Sprint End Date');
+
+                  // Assuming the first row contains data for the latest sprint
+                  const latestSprintData = data[0];
+                  document.getElementById('repo-owner').value = latestSprintData[0];
+                  document.getElementById('repo-name').value = latestSprintData[1];
+                  document.getElementById('access-token').value = latestSprintData[2];
+                  document.getElementById('start-date').value = latestSprintData[4];
+                  document.getElementById('end-date').value = latestSprintData[5];
+                };
+
+                reader.readAsText(file);
+              });
+            </script>
+
             </form>
           </div>
 

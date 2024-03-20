@@ -14,8 +14,8 @@ class SemestersController < ApplicationController
     include ClientSurveyPatternsHelper
 
 
-    
-    
+
+
     def home
         @semesters = Semester.order(:year)
         render :home
@@ -56,6 +56,10 @@ class SemestersController < ApplicationController
             @semester.client_csv.attach(params[:client_csv])
         end
 
+        if params[:git_csv].present?
+            @semester.git_csv.attach(params[:git_csv])
+        end
+
         if @semester.save
             redirect_to @semester, notice: 'Semester was successfully created.'
         else
@@ -73,7 +77,7 @@ class SemestersController < ApplicationController
 
     def update
         @semester = Semester.find(params[:id])
-        if @semester.update(params.require(:semester).permit(:semester, :year, :student_csv, :client_csv))
+        if @semester.update(params.require(:semester).permit(:semester, :year, :student_csv, :client_csv, :git_csv))
             flash[:success] = "Semester was successfully updated!"
             redirect_to semester_url(@semester)
         else
@@ -118,8 +122,8 @@ class SemestersController < ApplicationController
         return @teams
     end
 
-    
-  
+
+
 
 
     def team
@@ -137,7 +141,7 @@ class SemestersController < ApplicationController
         # stores all the flags for the team
         @flags = []
 
-    
+
 
 
         # Processes the student data first
@@ -213,7 +217,7 @@ class SemestersController < ApplicationController
                                 else 0
                                 end
                               end
-                              
+
                               self_scores&.map! do |score|
                                 case score
                                 when 'Always' then 5
@@ -241,7 +245,7 @@ class SemestersController < ApplicationController
 
                         # combine both name[1] + name[2]
                         including_self_scores = name[1] + name[2]
-                        
+
                         # Check if there are any scores present (self or peer) to calculate the average including self
                         if including_self_scores.present?
                             name.push((including_self_scores.sum / including_self_scores.size.to_f).round(1))
@@ -250,14 +254,14 @@ class SemestersController < ApplicationController
                         else
                             name.push("*Did not submit survey*")
                         end
-                        
+
                         name.push((name[2].sum / name[2].size.to_f).round(1))
-                      
+
                     #     Rails.logger.debug("DEBUGGGGGG #{name[-2]}")
                     #    Rails.logger.debug("NAMEE ADD")
                     #   Rails.logger.debug("#{self_scores}")
-                       
-                      
+
+
                       # stores the flags for the team
                         if name[-2].is_a?(String) && !@flags.include?("missing submit")
                             @flags.append("missing submit")
@@ -293,20 +297,20 @@ class SemestersController < ApplicationController
         @full_questions = client_data[:full_questions]
         @cliSurvey = client_data[:cliSurvey]
         @flags = flags
-        
-       
+
+
 
 
         #csv_path = get_csv_path
        # @client_question_titles = extract_titles_from_csv(client_data)
 
-        
+
 
         render :team
     end
 
 
-      
+
 
     def get_flags(semester, sprint, team)
         # stores all the flags for the team
@@ -476,7 +480,7 @@ class SemestersController < ApplicationController
           :semester, :year, sprints_attributes: [
           :id, :_destroy, :start_date, :end_date
         ],
-          student_csv: [], client_csv: []
+          student_csv: [], client_csv: [], git_csv: []
         )
     end
 
