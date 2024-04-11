@@ -22,11 +22,14 @@
     "type": "git",
     "url": "git+https://github.com/mrhosier42/tag.git"
   },
-  "keywords": [],
+  "keywords": [
+
+  ],
   "author": "",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/mrhosier42/tag/issues"
   },
-  "homepage": "https://github.com/mrhosier42/tag#readme"
+  "homepage": "https://github.com/mrhosier42/tag#readme",
+  "packageManager": "yarn@1.22.21"
 }
